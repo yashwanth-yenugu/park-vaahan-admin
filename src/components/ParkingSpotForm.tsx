@@ -82,6 +82,13 @@ export default function ParkingSpotForm({
     }
   };
 
+  const handleImageRemove = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index),
+    }));
+  };
+
   const handleAmenityToggle = (amenity: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -95,7 +102,6 @@ export default function ParkingSpotForm({
     <form
       onSubmit={handleSubmit}
       className="bg-white rounded-lg px-4 py-5 sm:px-6 sm:py-6"
-      data-netlify="true"
       name="parking-spot-post"
     >
       <div className="space-y-6">
@@ -189,12 +195,21 @@ export default function ParkingSpotForm({
             {formData.images.length > 0 && (
               <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3">
                 {formData.images.map((image, index) => (
-                  <img
-                    key={index}
-                    src={image}
-                    alt={`Parking spot ${index + 1}`}
-                    className="h-20 w-full object-cover rounded-md sm:h-24"
-                  />
+                  <div key={index} className="relative">
+                    <img
+                      key={index}
+                      src={image}
+                      alt={`Parking spot ${index + 1}`}
+                      className="h-20 w-full object-cover rounded-md sm:h-24"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleImageRemove(index)}
+                      className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full"
+                    >
+                      ×
+                    </button>
+                  </div>
                 ))}
               </div>
             )}

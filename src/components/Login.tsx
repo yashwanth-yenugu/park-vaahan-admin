@@ -3,12 +3,35 @@ import { useAuth } from "../context/AuthContext";
 import { Mail, Lock, LogIn, Car } from "lucide-react";
 
 export default function Login() {
-  const [credentials, setCredentials] = useState({ email: "", password: "" });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({ email: "", password: "" });
   const { login } = useAuth();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    login(credentials);
+
+    let hasError = false;
+    if (!email || !email.includes("@")) {
+      setErrors((prev) => ({ ...prev, email: "Invalid email" }));
+      hasError = true;
+    } else {
+      setErrors((prev) => ({ ...prev, email: "" }));
+    }
+
+    if (!password || password.length < 6) {
+      setErrors((prev) => ({
+        ...prev,
+        password: "Password must be at least 6 characters",
+      }));
+      hasError = true;
+    } else {
+      setErrors((prev) => ({ ...prev, password: "" }));
+    }
+
+    if (!hasError) {
+      login({ email, password });
+    }
   };
 
   return (
@@ -46,18 +69,15 @@ export default function Login() {
                     id="email"
                     name="email"
                     type="email"
-                    required
                     className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     placeholder="Enter your email"
-                    value={credentials.email}
-                    onChange={(e) =>
-                      setCredentials((prev) => ({
-                        ...prev,
-                        email: e.target.value,
-                      }))
-                    }
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
+                {errors.email && (
+                  <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+                )}
               </div>
 
               <div>
@@ -75,18 +95,15 @@ export default function Login() {
                     id="password"
                     name="password"
                     type="password"
-                    required
                     className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     placeholder="Enter your password"
-                    value={credentials.password}
-                    onChange={(e) =>
-                      setCredentials((prev) => ({
-                        ...prev,
-                        password: e.target.value,
-                      }))
-                    }
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
+                {errors.password && (
+                  <p className="mt-1 text-sm text-red-500">{errors.password}</p>
+                )}
               </div>
             </div>
 
